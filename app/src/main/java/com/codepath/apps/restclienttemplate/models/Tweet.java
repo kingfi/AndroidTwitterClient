@@ -16,10 +16,6 @@ public class Tweet {
     public String body;
     public String createdAt;
     public User user;
-    public String url1;
-    public String url2;
-    public String url3;
-    public String url4;
     public ArrayList<String> urls;
 
     // empty constructor requited for Parcel

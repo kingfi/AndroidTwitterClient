@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
@@ -71,21 +73,48 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         ImageView ivProfileImage;
         TextView tvBody;
         TextView tvScreenName;
+        ArrayList mediaViews;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
+
+            mediaViews = new ArrayList<ImageView>();
+            mediaViews.add((ImageView) itemView.findViewById(R.id.media1));
+            mediaViews.add((ImageView) itemView.findViewById(R.id.media2));
+            mediaViews.add((ImageView) itemView.findViewById(R.id.media3));
+            mediaViews.add((ImageView) itemView.findViewById(R.id.media4));
+
+
         }
 
         public void bind(Tweet tweet) {
             tvBody.setText(tweet.body);
             tvScreenName.setText(tweet.user.screenName);
 
+            // Load profile image
             int radius = 80;
             int margin = 5;
-            Glide.with(context).load(tweet.user.profileImageUrl).transform(new RoundedCornersTransformation(radius, margin)).into(ivProfileImage);
+            Glide.with(context).load(tweet.user.profileImageUrl)
+                               .transform(new RoundedCornersTransformation(radius, margin))
+                               .into(ivProfileImage);
+
+            // Load each media file
+            for (int i = 0; i < tweet.urls.size(); i ++) {
+                // Get a view from the views list
+                ImageView view = (ImageView) mediaViews.get(i);
+
+                //Make view visible
+                view.setVisibility(View.VISIBLE);
+
+                // Load Image
+                Glide.with(context).load(tweet.urls.get(i))
+                                   .into(view);
+
+            }
 
         }
     }

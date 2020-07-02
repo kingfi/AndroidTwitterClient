@@ -16,6 +16,7 @@ public class Tweet {
     public String body;
     public String createdAt;
     public User user;
+    public long id;
     public ArrayList<String> urls;
 
     // empty constructor requited for Parcel
@@ -25,6 +26,7 @@ public class Tweet {
         Tweet tweet = new Tweet();
         tweet.body = jsonObject.getString("text");
         tweet.createdAt = jsonObject.getString("created_at");
+        tweet.id = jsonObject.getLong("id");
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         tweet.urls = new ArrayList<String>();
         try{

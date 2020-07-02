@@ -111,7 +111,9 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 view.setVisibility(View.VISIBLE);
 
                 // Load Image
+                radius = 20;
                 Glide.with(context).load(tweet.urls.get(i))
+                                   .transform(new RoundedCornersTransformation(radius,margin))
                                    .into(view);
 
             }

@@ -34,4 +34,44 @@
         android:layout_toEndOf="@+id/ivProfileImage"
         tools:text="This is my Tweet!" />
 
+    <ImageView
+        android:id="@+id/media1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvBody"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="41dp"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/media2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvBody"
+        android:layout_marginStart="33dp"
+        android:layout_marginTop="41dp"
+        android:layout_toEndOf="@+id/media1"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/media3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/media1"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/media4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/media2"
+        android:layout_marginStart="33dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/media3"
+        tools:srcCompat="@tools:sample/avatars" />
+
 </RelativeLayout>

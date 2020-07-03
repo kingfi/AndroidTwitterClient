@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,6 +15,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.TweetDao;
+import com.codepath.apps.restclienttemplate.models.TweetWithUser;
+import com.codepath.apps.restclienttemplate.models.User;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.facebook.stetho.inspector.jsonrpc.JsonRpcException;
 
@@ -32,6 +36,7 @@ public class TimelineActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE = 20;
 
+    TweetDao tweetDao;
     RestClient client;
     RecyclerView rvTweets;
     List<Tweet> tweets;
@@ -46,6 +51,8 @@ public class TimelineActivity extends AppCompatActivity {
         Log.i(TAG, "onCreate!");
 
         client = RestApplication.getRestClient(this);
+        tweetDao = ((RestApplication) getApplicationContext()).getMyDatabase().tweetDao();
+
 
         swipeContainer = findViewById(R.id.swipeContainer);
 
@@ -86,6 +93,17 @@ public class TimelineActivity extends AppCompatActivity {
 
         // Adds the scroll listener to RecyclerView
         rvTweets.addOnScrollListener(scrollListener);
+
+        // Query for existing tweets in the DB
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                 List<TweetWithUser> tweetWithUsers = tweetDao.recentItems();
+                 List<Tweet> tweetsFromDB = TweetWithUser.getTweetList(tweetWithUsers);
+                 adapter.clear();
+                 adapter.addAll(tweetsFromDB);
+            }
+        });
 
         populateHomeTimeline();
 
@@ -158,10 +176,22 @@ public class TimelineActivity extends AppCompatActivity {
                 Log.i(TAG, "onSuccess!");
                 JSONArray jsonArray = json.jsonArray;
                 try{
+                    final List<Tweet> tweetsFromNetwork = Tweet.fromJsonArray(jsonArray);
                     adapter.clear();
                     adapter.addAll(Tweet.fromJsonArray(jsonArray));
                     // Signal refresh has finished
                     swipeContainer.setRefreshing(false);
+
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            //insert users first
+                            List<User> usersFromNetwork = User.fromJsonTweetArray(tweetsFromNetwork);
+                            tweetDao.insertModel(usersFromNetwork.toArray(new User[0]));
+                            //insert tweets next
+                            tweetDao.insertModel(tweetsFromNetwork.toArray(new Tweet[0]));
+                        }
+                    });
                 } catch (JSONException e){
                     Log.e(TAG, "Json exception");
                 }
